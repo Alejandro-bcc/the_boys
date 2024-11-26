@@ -1,7 +1,9 @@
 // programa principal do projeto "The Boys - 2024/2"
-// Autor: xxxxx, GRR xxxxxx
+// Autor: Alejandro David Nava Nava, GRR 20242778
 
-// seus #includes vão aqui
+#include <stdio.h>
+#include <stdlib.h>
+
 
 // seus #defines vão aqui
 
