@@ -1,4 +1,3 @@
-
 #include <conjunto.h>
 #include <lista.h>
 #include <fprio.h>
@@ -17,7 +16,7 @@ struct heroi{
 		experiencia,
 		id_base;
 
-	struct cjto_t habilidades;
+	struct cjto_t *habilidades;
 };
 
 /* estrutura das bases */
@@ -33,14 +32,14 @@ struct base{
 struct missao{
 
 	int id, perigo;
-	struct cjto_t habilidades;
+	struct cjto_t *habilidades;
 	struct coordenadas local;
 };
 
 /* estrutura do mundo */
 struct mundo{
 
-	int NHerois, NBases, NMissoes, NHabilidades, relogio, fim;
+	int NHerois, NBases, NMissoes, NHabilidades, inicio, fim;
 	struct heroi *Herois;
 	struct base *Bases;
 	struct missao *Missoes;
