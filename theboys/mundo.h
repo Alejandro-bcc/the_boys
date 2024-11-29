@@ -50,14 +50,18 @@ struct mundo{
 /* retorno: ponteiro para o mundo ou NULL em erro  */
 struct mundo * cria_mundo();
 
+/* destroi o mundo e todas suas entidades e libera a memoria */
+/* retorno: NULL */
+struct mundo * destroi_mundo(struct mundo *m);
+
 /* imprime um heroi e todos seus elementos  */
-void imprime_heroi(struct heroi *h);
+void imprime_heroi(struct heroi h);
 
 /* imprime uma base e todos seus elementos  */
-void imprime_base(struct base *b);
+void imprime_base(struct base b);
 
 /* imprime uma missao e todos seus elementos  */
-void imprime_missao(struct missao *ms);
+void imprime_missao(struct missao ms);
 
 /* imprime o mundo e todos seus elementos  */
 void imprime_mundo(struct mundo *m);
