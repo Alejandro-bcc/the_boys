@@ -1,6 +1,5 @@
 #include "conjunto.h"
 #include "lista.h"
-#include "fprio.h"
 
 struct coordenadas{
 
