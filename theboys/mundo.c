@@ -19,58 +19,58 @@ struct mundo * cria_mundo(){
 
 	novo->inicio = INICIO;
 	novo->fim = FIM;
-	novo->NHabilidades = HABILIDADES;
-	novo->NHerois = novo->NHabilidades * 5;
-	novo->NBases = novo->NHerois / 5;
-	novo->NMissoes = novo->fim / 100;
+	novo->n_habilidades = HABILIDADES;
+	novo->n_herois = novo->n_habilidades * 5;
+	novo->n_bases = novo->n_herois / 5;
+	novo->n_missoes = novo->fim / 100;
 	novo->maximos.x = TAMANHO;
 	novo->maximos.y = TAMANHO;
 
-	if(!(novo->Herois = malloc(sizeof(struct heroi) * novo->NHerois))){
+	if(!(novo->herois = malloc(sizeof(struct heroi) * novo->n_herois))){
 
 		free(novo);
 		return NULL;
 	}
 
-	if(!(novo->Bases = malloc(sizeof(struct base) * novo->NBases))){
+	if(!(novo->bases = malloc(sizeof(struct base) * novo->n_bases))){
 
 		free(novo);
 		return NULL;
 	}
 
-	if(!(novo->Missoes = malloc(sizeof(struct missao) * novo->NMissoes))){
+	if(!(novo->missoes = malloc(sizeof(struct missao) * novo->n_missoes))){
 		
 		free(novo);
 		return NULL;
 	}
 
 
-	for(i=0; i < novo->NHerois; i++){
+	for(i=0; i < novo->n_herois; i++){
 
-		novo->Herois[i].id = i;
-		novo->Herois[i].experiencia = 0;
-		novo->Herois[i].paciencia = rand() % 101;
-		novo->Herois[i].velocidade = (rand() % 4051) + 50;
-		novo->Herois[i].habilidades = cjto_aleat((rand() % 3 ) + 1, novo->NHabilidades);
+		novo->herois[i].id = i;
+		novo->herois[i].experiencia = 0;
+		novo->herois[i].paciencia = rand() % 101;
+		novo->herois[i].velocidade = (rand() % 4051) + 50;
+		novo->herois[i].habilidades = cjto_aleat((rand() % 3 ) + 1, novo->n_habilidades);
 	}
 
-	for(i=0; i < novo->NBases; i++){
+	for(i=0; i < novo->n_bases; i++){
 
-		novo->Bases[i].id = i;
-		novo->Bases[i].local.x = rand() % TAMANHO;
-		novo->Bases[i].local.y = rand() % TAMANHO;
-		novo->Bases[i].lotacao = (rand() % 8) + 3;
-		novo->Bases[i].presentes = cjto_cria(novo->Bases[i].lotacao);
-		novo->Bases[i].espera = lista_cria(); //fila 
+		novo->bases[i].id = i;
+		novo->bases[i].local.x = rand() % TAMANHO;
+		novo->bases[i].local.y = rand() % TAMANHO;
+		novo->bases[i].lotacao = (rand() % 8) + 3;
+		novo->bases[i].presentes = cjto_cria(novo->bases[i].lotacao);
+		novo->bases[i].espera = lista_cria(); //fila 
 	}
 
-	for(i=0; i < novo->NMissoes; i++){
+	for(i=0; i < novo->n_missoes; i++){
 
-		novo->Missoes[i].id = i;
-		novo->Missoes[i].local.x = rand() % TAMANHO;
-		novo->Missoes[i].local.y = rand() % TAMANHO;
-		novo->Missoes[i].habilidades = cjto_aleat((rand() % 5) + 6, novo->NHabilidades);
-		novo->Missoes[i].perigo = rand() % 101;
+		novo->missoes[i].id = i;
+		novo->missoes[i].local.x = rand() % TAMANHO;
+		novo->missoes[i].local.y = rand() % TAMANHO;
+		novo->missoes[i].habilidades = cjto_aleat((rand() % 5) + 6, novo->n_habilidades);
+		novo->missoes[i].perigo = rand() % 101;
 	}
 
 	return novo;
@@ -80,26 +80,26 @@ struct mundo * destroi_mundo(struct mundo *m){
 	
 	int i;
 
-	for(i=0; i < m->NHerois; i++)
-		m->Herois[i].habilidades = cjto_destroi(m->Herois[i].habilidades);
+	for(i=0; i < m->n_herois; i++)
+		m->herois[i].habilidades = cjto_destroi(m->herois[i].habilidades);
 
-	free(m->Herois);
-	m->Herois = NULL;
+	free(m->herois);
+	m->herois = NULL;
 
-	for(i=0; i < m->NBases; i++){
+	for(i=0; i < m->n_bases; i++){
 		
-		m->Bases[i].presentes = cjto_destroi(m->Bases[i].presentes);
-		m->Bases[i].espera = lista_destroi(m->Bases[i].espera);
+		m->bases[i].presentes = cjto_destroi(m->bases[i].presentes);
+		m->bases[i].espera = lista_destroi(m->bases[i].espera);
 	}
 
-	free(m->Bases);
-	m->Bases = NULL;
+	free(m->bases);
+	m->bases = NULL;
 
-	for(i=0; i < m->NMissoes; i++)
-		m->Missoes[i].habilidades = cjto_destroi(m->Missoes[i].habilidades);
+	for(i=0; i < m->n_missoes; i++)
+		m->missoes[i].habilidades = cjto_destroi(m->missoes[i].habilidades);
 
-	free(m->Missoes);
-	m->Missoes = NULL;
+	free(m->missoes);
+	m->missoes = NULL;
 
 	free(m);
 	return NULL;
@@ -148,26 +148,27 @@ void imprime_mundo(struct mundo *m){
 	printf("Tempo inicial: %d\n", m->inicio);
 	printf("Tempo final: %d\n", m->fim);
 	printf("Tamanho do mundo: %d\n", m->maximos.x);
-	printf("NHerois: %d\n", m->NHerois);
-	printf("NBases: %d\n", m->NBases);
-	printf("NMissoes: %d\n", m->NMissoes);
+	printf("n_herois: %d\n", m->n_herois);
+	printf("n_bases: %d\n", m->n_bases);
+	printf("n_missoes: %d\n", m->n_missoes);
 	printf("\n");
 	
-	for(i=0; i < m->NHerois; i++){
+	for(i=0; i < m->n_herois; i++){
 
 		printf("%d ", i);
-		imprime_heroi(m->Herois[i]);
+		imprime_heroi(m->herois[i]);
 	}
 
-	for(i=0; i < m->NBases; i++){
+	for(i=0; i < m->n_bases; i++){
 
 		printf("%d ", i);
-		imprime_base(m->Bases[i]);
+		imprime_base(m->bases[i]);
 	}
-
-	for(i=0; i < m->NMissoes; i++){
+/*  
+	for(i=0; i < m->n_missoes; i++){
 
 		printf("%d ", i);
-		imprime_missao(m->Missoes[i]);
+		imprime_missao(m->missoes[i]);
 	}
+*/
 }

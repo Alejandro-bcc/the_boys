@@ -8,11 +8,11 @@ MAIN    = teste
 ENTREGA = $(MAIN)
 
 # lista de arquivos de cabeçalho (a completar)
-HDR = lista.h fprio.h conjunto.h mundo.h
+HDR = lista.h fprio.h conjunto.h mundo.h eventos.h
 
 # lista de arquivos-objeto (a completar)
 # não inclua conjunto.o, senão ele será removido com "make clean"
-OBJ = lista.o fprio.o teste.o mundo.o
+OBJ = lista.o fprio.o teste.o mundo.o eventos.o
 
 # construir o executável
 $(MAIN): $(MAIN).o $(OBJ) conjunto.o

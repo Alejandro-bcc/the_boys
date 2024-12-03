@@ -1,3 +1,6 @@
+#ifndef MUNDO
+#define MUNDO
+
 #include "conjunto.h"
 #include "lista.h"
 
@@ -38,10 +41,10 @@ struct missao{
 /* estrutura do mundo */
 struct mundo{
 
-	int NHerois, NBases, NMissoes, NHabilidades, inicio, fim;
-	struct heroi *Herois;
-	struct base *Bases;
-	struct missao *Missoes;
+	int n_herois, n_bases, n_missoes, n_habilidades, inicio, fim;
+	struct heroi *herois;
+	struct base *bases;
+	struct missao *missoes;
 	struct coordenadas maximos;
 };
 
@@ -52,6 +55,9 @@ struct mundo * cria_mundo();
 /* destroi o mundo e todas suas entidades e libera a memoria */
 /* retorno: NULL */
 struct mundo * destroi_mundo(struct mundo *m);
+
+
+void imprime_estatisticas(struct mundo *m);
 
 /* imprime um heroi e todos seus elementos  */
 void imprime_heroi(struct heroi h);
@@ -64,3 +70,5 @@ void imprime_missao(struct missao ms);
 
 /* imprime o mundo e todos seus elementos  */
 void imprime_mundo(struct mundo *m);
+
+#endif

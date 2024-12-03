@@ -1,11 +1,70 @@
 #include "eventos.h"
 
-void cria_eventos_inicias(struct fprio *e, struct mundo m){
+#define FIM 1
+#define CHEGA 2
+#define ESPERA 3
+#define DESISTE 4
+#define AVISA 5
+#define ENTRA 6
+#define SAI 7
+#define VIAJA 8
+#define MORRE 9
+#define MISSAO 10
 
+void cria_evento(struct fprio_t *f, int tipo, int tempo, void *item1, void *item2){
 	
+	struct evento *novo;
+
+	if(!(novo = malloc(sizeof(struct evento))))
+		return;
+
+	novo->tipo = tipo;
+	novo->tempo = tempo;
+	novo->item1 = item1;
+	novo->item2 = item2;
+
+	fprio_insere(f, novo, tipo, tempo);
 }
 
-void chega(struct heroi h, struct base b){
+void executa_evento(struct evento *e){
+
+	switch(e->tipo){
+		case CHEGA:
+			chega(e->tempo, (struct heroi*)e->item1, e->item2);
+	}
+}
+
+void cria_eventos_inicias(struct fprio_t *f, struct mundo *m){
+	
+	int i, tempo, base_aleat;
+
+	cria_evento(f, FIM, m->fim, m, NULL);
+	
+	for(i=0; i < m->n_herois; i++){	
+
+		tempo = rand() % 4321;
+		base_aleat = rand() % m->n_bases;
+		cria_evento(f, CHEGA, tempo, m->herois[i], m->bases[base_aleat]);
+	}
+/*  
+	for(i=0; i < m->n_missoes; i++){
+
+		tempo = rand() % m->fim;
+		cria_evento(f, MISSAO, tempo, NULL, NULL);
+	}
+*/
+}
+
+void simulacao(struct fprio_t *lef){
+
+	struct evento *e;
+	int tipo, tempo;
+
+	e = fprio_retira(lef, &tipo, &tempo);
+	executa_evento(e);
+}
+
+void chega(int tempo, struct heroi h, struct base b){
 
 	int vagas, espera;
 
@@ -19,11 +78,11 @@ void chega(struct heroi h, struct base b){
 		espera = h.paciencia > (10 * lista_tamanho(b.espera));
 
 	if(espera)
-		//insere evento ESPERA 
+		printf("%d: CHEGA HEROI %d BASE %d (%d/ %d) ESPERA", tempo, h.id. b.id, b.lotacao - vagas, b.lotacao);
 	else
-		//evento DESISTE
+		printf("%d: CHEGA HEROI %d BASE %d (%d/ %d) DESISTE", tempo, h.id. b.id, b.lotacao - vagas, b.lotacao);
 }
-
+/*  
 void espera(struct heroi h, struct base b){
 
 	lista_insere(b.espera, h.id, -1);
@@ -37,3 +96,7 @@ void desiste(struct mundo m, struct heroi h){
 	nova_base = rand() % m.NBases;
 	// cria evento VIAJA
 }
+
+void fim()
+
+  */
