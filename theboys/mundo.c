@@ -5,7 +5,7 @@
 #include "mundo.h"
 
 #define INICIO 0
-#define FIM 1500
+#define FIM 15000
 #define HABILIDADES 10
 #define TAMANHO 20000
 

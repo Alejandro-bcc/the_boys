@@ -10,19 +10,20 @@
 /* estrutura de um evento qualquer */
 struct evento{
 	
-	int tipo, tempo;
-	void *item1;
-	void *item2;
+	int tipo, 
+		tempo,
+		item1,
+		item2;
 };
 
 /* cria um evento qualquer e insere ele na LEF  */
-void cria_evento(struct fprio_t *lef, int tipo, int tempo, void *item1, void *item2);
+void cria_evento(struct fprio_t *lef, int tipo, int tempo, int item1, int item2);
 
 /* cria os eventos inicias para os herois e as missoes */
 /* e agenda o fim do mundo */
-void cria_eventos_iniciais(struct fprio_t *e, struct mundo *m);
+void cria_eventos_iniciais(struct fprio_t *lef, struct mundo *m);
 
-void chega(int tempo, struct heroi h, struct base b);
+void chega(struct fprio_t *lef, struct mundo *m, int tempo, int h, int b);
 /*  
 void espera(struct heroi h, struct base b);
 
@@ -39,11 +40,11 @@ void viaja();
 void morre();
 
 void missao();
-
-void fim();
   */
-void executa_evento(struct evento *e);
+void fim(int tempo);
 
-void simulacao(struct fprio_t *lef);
+void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e);
+
+void simulacao(struct fprio_t *lef, struct mundo *m);
 
 #endif

@@ -7,10 +7,10 @@ int main(){
 	struct fprio_t *lef;
 	lef = malloc(sizeof(struct fprio_t));
 	m = cria_mundo();
-	imprime_mundo(m);
+	//imprime_mundo(m);
 	cria_eventos_iniciais(lef, m);
-	simulacao(lef);
+	simulacao(lef, m);
 	m = destroi_mundo(m);
-
+	free(lef);
 	return 0;
 }
