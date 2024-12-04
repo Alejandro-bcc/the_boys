@@ -35,6 +35,30 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 		case CHEGA:
 			chega(lef, m, e->tempo, e->item1, e->item2);
 			break;
+		case ESPERA:
+			espera(lef, m, e->tempo, e->item1, e->item2);
+			break;
+		case DESISTE:
+			desiste(lef, m, e->tempo, e->item1, e->item2);
+			break;  
+		case AVISA:
+			avisa(lef, m, e->tempo, e->item1, e->item2);
+			break;/*  
+		case ENTRA:
+			entra();
+			break;
+		case SAI:
+			sai();
+			break;
+		case VIAJA:
+			viaja();
+			break;
+		case MORRE:
+			morre();
+			break;
+		case MISSAO:
+			missao();
+			break;  */
 	}
 }
 
@@ -62,16 +86,12 @@ void cria_eventos_iniciais(struct fprio_t *lef, struct mundo *m){
 void simulacao(struct fprio_t *lef, struct mundo *m){
 
 	struct evento *e;
-	int i, tipo, tempo;
-
-	i = 1;
+	int tipo, tempo;
 
 	do{
-		printf("%2d", i);
 		e = fprio_retira(lef, &tipo, &tempo);
 		executa_evento(lef, m, e);
 		free(e);
-		i++;
 
 	}while(tipo != FIM);
 	printf("\n");
@@ -85,6 +105,7 @@ void chega(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 
 	h = &m->herois[heroi];
 	b = &m->bases[base];
+
 	h->id_base = b->id;
 
 	vagas = b->lotacao - cjto_card(b->presentes);
@@ -95,30 +116,58 @@ void chega(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 		espera = h->paciencia > (10 * lista_tamanho(b->espera));
 
 	if(espera){
-		printf("%6d: CHEGA HEROI %2d BASE %d (%2d /%2d) ESPERA\n", tempo, h->id, b->id, b->lotacao - vagas, b->lotacao);
+
+		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d /%2d) ESPERA\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
 		cria_evento(lef, ESPERA, tempo, heroi, base);
 	}
 	else{
-		printf("%6d: CHEGA HEROI %2d BASE %d (%2d /%2d) DESISTE\n", tempo, h->id, b->id, b->lotacao - vagas, b->lotacao);
+
+		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d /%2d) DESISTE\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
 		cria_evento(lef, DESISTE, tempo, heroi, base);
 	}
 
 }
-/*  
-void espera(struct heroi h, struct base b){
 
-	lista_insere(b.espera, h.id, -1);
-	//cria evento DESISTE
+void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
+
+	struct heroi *h;
+	struct base *b;
+
+	h = &m->herois[heroi];
+	b = &m->bases[base];
+
+	printf("%6d: ESPERA  HEROI %2d BASE %d (%2d)\n", tempo, heroi, base, lista_tamanho(b->espera));
+	lista_insere(b->espera, h->id, -1);
+	cria_evento(lef, AVISA, tempo, base, -1);
 }
 
-void desiste(struct mundo m, struct heroi h){
-
+void desiste(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
+	
 	int nova_base;
 
-	nova_base = rand() % m.NBases;
-	// cria evento VIAJA
+	nova_base = rand() % m->n_bases;
+	printf("%6d: DESISTE HEROI %2d BASE %d\n", tempo, heroi, base);
+	cria_evento(lef, VIAJA, tempo, heroi, nova_base);
 }
-  */
+
+void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base){
+
+	struct base *b;
+	int vagas, heroi_fila;
+	
+	b = &m->bases[base];
+
+	vagas = b->lotacao - cjto_card(b->presentes);
+	while(vagas != 0){
+
+		lista_consulta(b->espera, &heroi_fila, 0);
+		lista_retira(b->espera, &heroi_fila, 0);
+		cjto_insera(b->presentes, heroi_fila);
+		cria_evento(lef, ENTRA, tempo, heroi_fila, base);
+	}
+
+}
+
 void fim(int tempo){
 
 	printf("%6d: FIM\n", tempo);

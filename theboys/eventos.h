@@ -24,12 +24,12 @@ void cria_evento(struct fprio_t *lef, int tipo, int tempo, int item1, int item2)
 void cria_eventos_iniciais(struct fprio_t *lef, struct mundo *m);
 
 void chega(struct fprio_t *lef, struct mundo *m, int tempo, int h, int b);
-/*  
-void espera(struct heroi h, struct base b);
+  
+void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base);
+  
+void desiste(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base);
 
-void desiste(struct mundo m, struct heroi h);
-
-void avisa();
+void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base);
 
 void entra();
 
@@ -40,7 +40,7 @@ void viaja();
 void morre();
 
 void missao();
-  */
+
 void fim(int tempo);
 
 void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e);

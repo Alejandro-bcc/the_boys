@@ -1,8 +1,10 @@
+#include <stdlib.h>
 #include "mundo.h"
 #include "eventos.h"
 
 int main(){
 	
+	srand(0);
 	struct mundo *m;
 	struct fprio_t *lef;
 	lef = malloc(sizeof(struct fprio_t));
