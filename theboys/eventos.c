@@ -43,10 +43,10 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 			break;  
 		case AVISA:
 			avisa(lef, m, e->tempo, e->item1);
-			break;/*  
+			break;  
 		case ENTRA:
-			entra();
-			break;
+			entra(lef, m, e->tempo, e->item1, e->item2);
+			break;/*  
 		case SAI:
 			sai();
 			break;
@@ -118,13 +118,13 @@ void chega(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 
 	if(espera){
 
-		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d/%2d) ESPERA\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
+		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d /%2d) ESPERA\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
 
 		cria_evento(lef, ESPERA, tempo, heroi, base);
 	}
 	else{
 
-		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d/%2d) DESISTE\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
+		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d /%2d) DESISTE\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
 
 		cria_evento(lef, DESISTE, tempo, heroi, base);
 	}
@@ -138,7 +138,7 @@ void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base
 	h = &m->herois[heroi];
 	b = &m->bases[base];
 
-	printf("%6d: ESPERA  HEROI %2d BASE %d (%2d)\n", tempo, heroi, base, lista_tamanho(b->espera));
+	printf("%6d: ESPERA  HEROI %2d BASE %d (%2d )\n", tempo, heroi, base, lista_tamanho(b->espera));
 	lista_insere(b->espera, h->id, -1);
 	cria_evento(lef, AVISA, tempo, base, -1);
 }
@@ -161,7 +161,7 @@ void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base){
 
 	vagas = b->lotacao - cjto_card(b->presentes);
 
-	printf("%6d: AVISA   PORTEIRO BASE %d (%2d/%2d) FILA [ ", tempo, base, b->lotacao - vagas, b->lotacao);
+	printf("%6d: AVISA   PORTEIRO BASE %d (%2d /%2d) FILA [ ", tempo, base, b->lotacao - vagas, b->lotacao);
 	lista_imprime(b->espera);
 	printf(" ]\n");
 
@@ -172,11 +172,23 @@ void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base){
 		cjto_insere(b->presentes, heroi_fila);
 		cria_evento(lef, ENTRA, tempo, heroi_fila, base);
 		vagas--;
-		printf("%6d: AVISA   PORTEIRO BASE %d ADMITE %2d ", tempo, base, heroi_fila);
-		printf("presentes: ");
-		cjto_imprime(b->presentes);
-		printf("\n");
+		printf("%6d: AVISA   PORTEIRO BASE %d ADMITE %2d\n", tempo, base, heroi_fila);	
 	}
+}
+
+void entra(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
+
+	struct heroi *h;
+	struct base *b;
+	int t_permanencia, t_saida;
+
+	h = &m->herois[heroi];
+	b = &m->bases[base];
+
+	t_permanencia = 15 + h->paciencia * ((rand() % 21) + 1);
+	t_saida = tempo + t_permanencia;
+	printf("%6d: ENTRA   HEROI %2d BASE %d (%2d /%2d) SAI %d\n", tempo, heroi, base, cjto_card(b->presentes), b->lotacao, t_saida);
+	cria_evento(lef, SAI, t_saida, heroi, base);
 }
 
 void fim(int tempo){

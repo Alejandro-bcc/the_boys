@@ -31,7 +31,7 @@ void desiste(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int bas
 
 void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base);
 
-void entra();
+void entra(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base);
 
 void sai();
 

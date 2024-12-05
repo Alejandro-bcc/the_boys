@@ -60,7 +60,7 @@ struct mundo * cria_mundo(){
 		novo->bases[i].local.x = rand() % TAMANHO;
 		novo->bases[i].local.y = rand() % TAMANHO;
 		novo->bases[i].lotacao = (rand() % 8) + 3;
-		novo->bases[i].presentes = cjto_cria(novo->bases[i].lotacao);
+		novo->bases[i].presentes = cjto_cria(novo->n_herois);
 		novo->bases[i].espera = lista_cria(); //fila 
 	}
 
