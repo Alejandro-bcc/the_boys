@@ -42,7 +42,7 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 			desiste(lef, m, e->tempo, e->item1, e->item2);
 			break;  
 		case AVISA:
-			avisa(lef, m, e->tempo, e->item1, e->item2);
+			avisa(lef, m, e->tempo, e->item1);
 			break;/*  
 		case ENTRA:
 			entra();
@@ -106,6 +106,7 @@ void chega(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 	h = &m->herois[heroi];
 	b = &m->bases[base];
 
+	
 	h->id_base = b->id;
 
 	vagas = b->lotacao - cjto_card(b->presentes);
@@ -117,15 +118,16 @@ void chega(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 
 	if(espera){
 
-		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d /%2d) ESPERA\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
+		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d/%2d) ESPERA\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
+
 		cria_evento(lef, ESPERA, tempo, heroi, base);
 	}
 	else{
 
-		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d /%2d) DESISTE\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
+		printf("%6d: CHEGA   HEROI %2d BASE %d (%2d/%2d) DESISTE\n", tempo, heroi, base, b->lotacao - vagas, b->lotacao);
+
 		cria_evento(lef, DESISTE, tempo, heroi, base);
 	}
-
 }
 
 void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
@@ -158,14 +160,23 @@ void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base){
 	b = &m->bases[base];
 
 	vagas = b->lotacao - cjto_card(b->presentes);
-	while(vagas != 0){
+
+	printf("%6d: AVISA   PORTEIRO BASE %d (%2d/%2d) FILA [ ", tempo, base, b->lotacao - vagas, b->lotacao);
+	lista_imprime(b->espera);
+	printf(" ]\n");
+
+	while(vagas != 0 && lista_tamanho(b->espera) != 0){
 
 		lista_consulta(b->espera, &heroi_fila, 0);
 		lista_retira(b->espera, &heroi_fila, 0);
-		cjto_insera(b->presentes, heroi_fila);
+		cjto_insere(b->presentes, heroi_fila);
 		cria_evento(lef, ENTRA, tempo, heroi_fila, base);
+		vagas--;
+		printf("%6d: AVISA   PORTEIRO BASE %d ADMITE %2d ", tempo, base, heroi_fila);
+		printf("presentes: ");
+		cjto_imprime(b->presentes);
+		printf("\n");
 	}
-
 }
 
 void fim(int tempo){
