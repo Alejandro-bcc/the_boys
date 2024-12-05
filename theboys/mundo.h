@@ -60,6 +60,9 @@ struct mundo * destroi_mundo(struct mundo *m);
 /* calcula a distancia cartesiana entre o ponto de origem e destino  */
 int calcula_distancia(struct coordenadas origem, struct coordenadas destino);
 
+/* retorna o indice do menor elemento em um vetor de inteiros de tamanho n */
+int min(int *v, int n);
+
 void imprime_estatisticas(struct mundo *m);
 
 /* imprime um heroi e todos seus elementos  */

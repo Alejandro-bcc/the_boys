@@ -255,19 +255,23 @@ void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missa
 	cria_evento(lef, AVISA, tempo, h->id_base, -1);
 }
   
-void missao(struct fprio_t *lef, mundo *m, int tempo, int missao){
+void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
+	struct b_mais_prox;
 	int *distancias;
-	int i;
+	int i, dist_mais_prox;
 
 	mis = &m->missoes[missao];
 	distancias = malloc(sizeof(int) * m->n_bases);
 
 	for(i = 0; i < m->n_bases; i++)
-		distancias[i] = calcula_distancia(mis->local, )
+		distancias[i] = calcula_distancia(mis->local, m->bases[i]);
 
+	dist_mais_prox = min(distancias);
+	b_mais_prox = &m->bases[dist_mais_prox];
 	
+	printf("%6d: MISSAO  %d BASE %d DIST %d HEROIS\n", tempo, missao, b_mais_prox, dist_mais_prox);
 	free(distancias);
 	distancias = NULL;
 }

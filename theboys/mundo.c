@@ -45,7 +45,6 @@ struct mundo * cria_mundo(){
 		return NULL;
 	}
 
-
 	for(i=0; i < novo->n_herois; i++){
 
 		novo->herois[i].id = i;
@@ -114,6 +113,21 @@ int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
 	aux = (destino.x - origem.x) * (destino.x - origem.x);
 	aux += (destino.y - origem.y) * (destino.y - origem.y);
  	return sqrt(aux);
+}
+
+int min(int *v, int n){
+
+	int i, menor;
+
+	menor = 0;
+	i = 1;
+
+	while(i < n){
+		if(v[i] < v[menor])
+			menor = i;
+		i++;
+	}
+	return menor;
 }
 
 void imprime_heroi(struct heroi h){
