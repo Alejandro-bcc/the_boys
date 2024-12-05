@@ -1,3 +1,4 @@
+#include <math.h>
 #include "eventos.h"
 
 #define FIM 1
@@ -46,10 +47,10 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 			break;  
 		case ENTRA:
 			entra(lef, m, e->tempo, e->item1, e->item2);
-			break;/*  
+			break;  
 		case SAI:
-			sai();
-			break;
+			sai(lef, m, e->tempo, e->item1, e->item2);
+			break;/*  
 		case VIAJA:
 			viaja();
 			break;
@@ -189,6 +190,39 @@ void entra(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 	t_saida = tempo + t_permanencia;
 	printf("%6d: ENTRA   HEROI %2d BASE %d (%2d /%2d) SAI %d\n", tempo, heroi, base, cjto_card(b->presentes), b->lotacao, t_saida);
 	cria_evento(lef, SAI, t_saida, heroi, base);
+}
+
+void sai(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
+
+	struct base *b;
+	int base_aleat;
+
+	b = &m->bases[base];
+
+	base_aleat = rand() % m->n_bases;
+
+	cjto_retira(b->presentes, heroi);
+	
+	printf("%6d: SAI     HEROI %2d BASE %d (%2d /%2d)\n", tempo, heroi, base, cjto_card(b->presentes), b->lotacao);
+
+	cria_evento(lef, VIAJA, tempo, heroi, base_aleat);
+	cria_evento(lef, AVISA, tempo, base, -1);
+}
+
+void viaja(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
+
+	struct heroi *h;
+	struct base *b_or;
+	struct base *b_des;
+	int distancia, duracao, aux;
+
+	h = &m->herois[heroi];
+	b_or = &m->bases[h->id_base];
+	b_des = &m->bases[base];
+
+	aux = (b_des->local.x - b_or->local.x) * (b_des->local.x - b_or->local.x);
+	aux += (b_des->local.y - b_or->local.y) * (b_des->local.y - b_or->local.y);
+	distancia = sqrt(aux);
 }
 
 void fim(int tempo){
