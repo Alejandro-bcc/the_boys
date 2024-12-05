@@ -1,4 +1,3 @@
-#include <math.h>
 #include "eventos.h"
 
 #define FIM 1
@@ -50,13 +49,13 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 			break;  
 		case SAI:
 			sai(lef, m, e->tempo, e->item1, e->item2);
-			break;/*  
+			break;  
 		case VIAJA:
-			viaja();
-			break;
+			viaja(lef, m, e->tempo, e->item1, e->item2);
+			break;  
 		case MORRE:
-			morre();
-			break;
+			morre(lef, m, e->tempo, e->item1, e->item2);
+			break;/*  
 		case MISSAO:
 			missao();
 			break;  */
@@ -107,7 +106,9 @@ void chega(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 	h = &m->herois[heroi];
 	b = &m->bases[base];
 
-	
+	if(h->morto)
+		return;
+
 	h->id_base = b->id;
 
 	vagas = b->lotacao - cjto_card(b->presentes);
@@ -136,6 +137,9 @@ void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base
 	struct heroi *h;
 	struct base *b;
 
+	if(m->herois[heroi].morto)
+		return;
+
 	h = &m->herois[heroi];
 	b = &m->bases[base];
 
@@ -147,6 +151,9 @@ void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base
 void desiste(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
 	
 	int nova_base;
+
+	if(m->herois[heroi].morto)
+		return;	
 
 	nova_base = rand() % m->n_bases;
 	printf("%6d: DESISTE HEROI %2d BASE %d\n", tempo, heroi, base);
@@ -185,6 +192,9 @@ void entra(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 
 	h = &m->herois[heroi];
 	b = &m->bases[base];
+	
+	if(h->morto)
+		return;	
 
 	t_permanencia = 15 + h->paciencia * ((rand() % 21) + 1);
 	t_saida = tempo + t_permanencia;
@@ -196,6 +206,9 @@ void sai(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base){
 
 	struct base *b;
 	int base_aleat;
+
+	if(m->herois[heroi].morto)
+		return;	
 
 	b = &m->bases[base];
 
@@ -214,15 +227,49 @@ void viaja(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base)
 	struct heroi *h;
 	struct base *b_or;
 	struct base *b_des;
-	int distancia, duracao, aux;
+	int distancia, duracao;
 
 	h = &m->herois[heroi];
 	b_or = &m->bases[h->id_base];
 	b_des = &m->bases[base];
 
-	aux = (b_des->local.x - b_or->local.x) * (b_des->local.x - b_or->local.x);
-	aux += (b_des->local.y - b_or->local.y) * (b_des->local.y - b_or->local.y);
-	distancia = sqrt(aux);
+	distancia = calcula_distancia(b_or->local, b_des->local);
+
+	duracao = distancia / h->velocidade;
+	
+	printf("%6d: VIAJA   HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", tempo, heroi, b_or->id, base, distancia, h->velocidade, tempo + duracao);
+	cria_evento(lef, CHEGA, tempo + duracao, heroi, base);
+}
+
+void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missao){
+
+	struct heroi *h;
+	struct base *b;
+
+	h = &m->herois[heroi];
+	b = &m->bases[h->id_base];
+
+	cjto_retira(b->presentes, heroi);
+	h->morto = 1;
+	printf("%6d: MORRE   HEROI %2d MISSAO %d\n", tempo, heroi, missao);
+	cria_evento(lef, AVISA, tempo, h->id_base, -1);
+}
+  
+void missao(struct fprio_t *lef, mundo *m, int tempo, int missao){
+
+	struct missao *mis;
+	int *distancias;
+	int i;
+
+	mis = &m->missoes[missao];
+	distancias = malloc(sizeof(int) * m->n_bases);
+
+	for(i = 0; i < m->n_bases; i++)
+		distancias[i] = calcula_distancia(mis->local, )
+
+	
+	free(distancias);
+	distancias = NULL;
 }
 
 void fim(int tempo){

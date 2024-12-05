@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "conjunto.h"
 #include "lista.h"
 #include "mundo.h"
 
 #define INICIO 0
-#define FIM 15000
+#define FIM 5000
 #define HABILIDADES 10
 #define TAMANHO 20000
 
@@ -51,6 +52,7 @@ struct mundo * cria_mundo(){
 		novo->herois[i].experiencia = 0;
 		novo->herois[i].paciencia = rand() % 101;
 		novo->herois[i].velocidade = (rand() % 4051) + 50;
+		novo->herois[i].morto = 0;
 		novo->herois[i].habilidades = cjto_aleat((rand() % 3 ) + 1, novo->n_habilidades);
 	}
 
@@ -103,6 +105,15 @@ struct mundo * destroi_mundo(struct mundo *m){
 
 	free(m);
 	return NULL;
+}
+
+int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
+
+	int aux;
+
+	aux = (destino.x - origem.x) * (destino.x - origem.x);
+	aux += (destino.y - origem.y) * (destino.y - origem.y);
+ 	return sqrt(aux);
 }
 
 void imprime_heroi(struct heroi h){

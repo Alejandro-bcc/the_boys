@@ -55,7 +55,7 @@ int fprio_insere(struct fprio_t *f, void *item, int tipo, int prio){
     novo->prio = prio;
 
     /* a lista está vazia */
-    if(f->prim == NULL){
+    if(!f->prim){
 
         f->prim = novo;
         novo->prox = NULL;

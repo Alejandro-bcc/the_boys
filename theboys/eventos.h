@@ -33,11 +33,11 @@ void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base);
 
 void entra(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base);
 
-void sai();
+void sai(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base);
 
-void viaja();
+void viaja(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base);
 
-void morre();
+void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missao);
 
 void missao();
 

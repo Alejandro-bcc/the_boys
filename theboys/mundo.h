@@ -16,6 +16,7 @@ struct heroi{
 		paciencia,
 		velocidade,
 		experiencia,
+		morto, // 1 se o heroi esta morto 0 se esta vivo
 		id_base;
 
 	struct cjto_t *habilidades;
@@ -56,6 +57,8 @@ struct mundo * cria_mundo();
 /* retorno: NULL */
 struct mundo * destroi_mundo(struct mundo *m);
 
+/* calcula a distancia cartesiana entre o ponto de origem e destino  */
+int calcula_distancia(struct coordenadas origem, struct coordenadas destino);
 
 void imprime_estatisticas(struct mundo *m);
 
