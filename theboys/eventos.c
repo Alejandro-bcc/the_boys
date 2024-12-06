@@ -257,45 +257,37 @@ void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missa
 void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
-	struct base *b_aux;	
-	struct par *distancias; //vetor com as distancias e os indices das respectivas bases
-	int i, dist;
+	struct base *b_aux;
+	struct cjto_t *habs_aux;
 
 	mis = &m->missoes[missao];
 	mis->tent++;
-	distancias = malloc(sizeof(struct par) * m->n_bases);
+	b_aux = NULL;
 
 	printf("%6d: MISSAO  %2d TENT %d HAB REQ: [ ", tempo, missao, mis->tent);
 	cjto_imprime(mis->habilidades);
 	printf(" ]\n");
 
-	for(i = 0; i < m->n_bases; i++){
 
-		distancias[i].id = i;
-		distancias[i].cont = calcula_distancia(mis->local, m->bases[i].local);
-	}
-
-	ordena_vetor_pares(distancias, m->n_bases);
-
-	i = 0;
-
-	b_aux = &m->bases[distancia[i].id];
-
-	while(i < m->n_bases && !base_apta(m, mis, b_aux)){
+	if(acha_base_apta(m, mis, b_aux, &habs_aux)){
 		
-		b_aux = &m->bases[distancia[i].id];
-		i++;
+		printf("%6d: MISSAO %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux->id);
+		cjto_imprime(habs_aux);
+		printf(" ]\n");
+	}else{
+		
+		printf("%6d: MISSAO %2d IMPOSSIVEL", tempo, b_aux->id);
 	}
-  
+
+ /*  
 	printf("%6d: MISSAO  %2d BASE %d DIST %5d HEROIS [ ", tempo, missao, b_aux->id, dist);
 	cjto_imprime(b_aux->presentes);
 	printf(" ]\n");
-  
+    */
+
 	fprio_tamanho(lef);
 	  
 //	cria_evento(lef, AVISA, );
-	free(distancias);
-	distancias = NULL;
 }
 
 void fim(/* struct mundo *m,  */ int tempo){

@@ -151,18 +151,18 @@ void ordena_vetor_pares(struct par p[], int n){
     }
 }
 
-int base_apta(struct mundo *m, struct missao *mis, struct base *b){
+int base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t **habs){
 
-	struct cjto *c_aux1; //armezena temporariamente as habs. dos herois de b
-	struct cjto *c_aux2; //auxiliar que evita o vazamento de memoria
-	struct heroi h_aux;
+	struct cjto_t *c_aux1; //armezena temporariamente as habs. dos herois de b
+	struct cjto_t *c_aux2; //auxiliar que evita o vazamento de memoria
+	struct heroi *h_aux;
 	int i;
 
 	/* erro, ponteiro invalido */
 	if(m == NULL || mis == NULL || b == NULL)
 		return -1;
 	
-	c_aux = cjto_cria(m->n_habilidades);
+	c_aux1 = cjto_cria(m->n_habilidades);
 
 	for(i=0; i < m->n_herois; i++){
 
@@ -172,13 +172,67 @@ int base_apta(struct mundo *m, struct missao *mis, struct base *b){
 
 			c_aux2 = cjto_uniao(c_aux1, h_aux->habilidades);
 			cjto_destroi(c_aux1);
-			c_aux1 = aux;
+			c_aux1 = c_aux2;
 		}
 	}
 
-	if(cjto_contem(c_aux1, mis->habilidades))
+	if(cjto_contem(c_aux1, mis->habilidades)){
+
+		*habs = c_aux1;
+		h_aux = NULL;
 		return 1;
+	}
+
+	*habs = NULL;
+	h_aux = NULL;
+	return 0;
+}
+
+int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t **habs){
+
+	/* vetor com as distancias e os indices das respectivas bases ate a missao */
+	struct par *dist;
+	struct cjto_t *c_aux;
+	int i;
+
+	/* erro, ponteiro invalidos */
+	if(m == NULL || mis == NULL || b == NULL)
+		return -1;
+
+	/* erro, alocacao mal-sucedida */
+	if(!(dist = malloc(sizeof(struct par) * m->n_bases)))
+		return -1;
+
+	/* calcula a distancia ate todas as bases  */
+	for(i = 0; i < m->n_bases; i++){
+
+		dist[i].id = i;
+		dist[i].cont = calcula_distancia(mis->local, m->bases[i].local);
+	}
+
+	ordena_vetor_pares(dist, m->n_bases);
+
+	i = 0;
+
+	while(i < m->n_bases && !base_apta(m, mis, &m->bases[dist[i].id], &c_aux))
+		i++;
+
+	/* verifica se há uma base apta */
+	if(i < m->n_bases){
 	
+		b = &m->bases[dist[i].id];
+		*habs = c_aux;
+		free(dist);
+		dist = NULL;
+		c_aux = NULL;
+		return 1;
+	}
+
+	b = NULL;
+	*habs = NULL;
+	free(dist);
+	dist = NULL;
+	c_aux = NULL;
 	return 0;
 }
 
