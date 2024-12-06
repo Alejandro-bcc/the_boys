@@ -257,32 +257,54 @@ void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missa
 void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
-	struct base *b; //ponteiro para a base mais proxima
-	int *distancias;
-	int i, dist; //distancia ate essa base
+	struct base *b_aux;	
+	struct par *distancias;
+	int i, dist;
 
 	mis = &m->missoes[missao];
-	distancias = malloc(sizeof(int) * m->n_bases);
+	mis->tent++;
+	distancias = malloc(sizeof(struct par) * m->n_bases);
 
-	for(i = 0; i < m->n_bases; i++)
-		distancias[i] = calcula_distancia(mis->local, m->bases[i].local);
-
-	dist = distancias[min(distancias, m->n_bases)];
-	b = &m->bases[min(distancias, m->n_bases)];
-	
-	printf("%6d: MISSAO  %2d BASE %d DIST %4d HEROIS [ ", tempo, missao, b->id, dist);
-	cjto_imprime(b->presentes);
+	printf("%6d: MISSAO  %2d TENT %d HAB REQ: [ ", tempo, missao, mis->tent);
+	cjto_imprime(mis->habilidades);
 	printf(" ]\n");
 
+	for(i = 0; i < m->n_bases; i++){
+
+		distancias[i].id = i;
+		distancias[i].cont = calcula_distancia(mis->local, m->bases[i].local);
+	}
+
+	printf("Bases candidatas:\n");
+	for(i=0; i < m->n_bases; i++)
+		printf("	BASE %d DIST %5d\n", distancias[i].id, distancias[i].cont);
+
+	ordena_vetor_pares(distancias, m->n_bases);
+
+	b_aux = &m->bases[distancias[0].id];
+	dist = distancias[0].cont;
+
+
+
+	printf("Bases candidatas:\n");
+	for(i=0; i < m->n_bases; i++)
+		printf("	BASE %d DIST %5d\n", distancias[i].id, distancias[i].cont);
+
+  
+	printf("%6d: MISSAO  %2d BASE %d DIST %5d HEROIS [ ", tempo, missao, b_aux->id, dist);
+	cjto_imprime(b_aux->presentes);
+	printf(" ]\n");
+  
 	fprio_tamanho(lef);
+	  
 //	cria_evento(lef, AVISA, );
 	free(distancias);
 	distancias = NULL;
 }
 
-void fim(struct mundo *m, int tempo){
+void fim(/* struct mundo *m,  */ int tempo){
 
 	printf("%6d: FIM\n", tempo);
 
-	imprime_estatisticas(m);
+	//imprime_estatisticas(m);
 }

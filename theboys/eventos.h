@@ -41,7 +41,7 @@ void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missa
 
 void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao);
 
-void fim(struct mundo *m, int tempo);
+void fim(/*struct mundo *m,  */ int tempo);
 
 void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e);
 

@@ -72,6 +72,7 @@ struct mundo * cria_mundo(){
 		novo->missoes[i].local.y = rand() % TAMANHO;
 		novo->missoes[i].habilidades = cjto_aleat((rand() % 5) + 6, novo->n_habilidades);
 		novo->missoes[i].perigo = rand() % 101;
+		novo->missoes[i].tent = 0;
 	}
 
 	return novo;
@@ -105,7 +106,7 @@ struct mundo * destroi_mundo(struct mundo *m){
 	free(m);
 	return NULL;
 }
-
+/*  
 void imprime_estatisticas(struct mundo *m){
 
 	int i;
@@ -122,7 +123,7 @@ void imprime_estatisticas(struct mundo *m){
 		printf("PAC %3d VEL %4d EXP %4d HABS ", m->herois[i].pac);
 	}
 }
-
+  */
 int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
 
 	int aux;
@@ -132,19 +133,24 @@ int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
  	return sqrt(aux);
 }
 
-int min(int *v, int n){
+void ordena_vetor_pares(struct par p[], int n){
 
-	int i, menor;
+	struct par aux;
+	int i, j;
 
-	menor = 0;
-	i = 1;
+	for(i=0; i < n; i++){
 
-	while(i < n){
-		if(v[i] < v[menor])
-			menor = i;
-		i++;
+		j = i - 1;
+		if(j >= 0)
+			printf("\n%d < %d",p[i].cont, p[j].cont);
+		while(j >= 0 && p[i].cont < p[j].cont){
+			printf(" troca %d e %d\n", p[j].cont, p[i].cont);
+			aux = p[i];
+			p[i] = p[j];
+			p[j] = aux;
+			j--;
+		}
 	}
-	return menor;
 }
 
 void imprime_heroi(struct heroi h){

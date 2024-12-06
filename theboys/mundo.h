@@ -4,6 +4,12 @@
 #include "conjunto.h"
 #include "lista.h"
 
+/* estrutura com um identificador e um conteudo */
+struct par{
+
+	int id, cont;
+};
+
 struct coordenadas{
 
 	int x, y;
@@ -34,7 +40,7 @@ struct base{
 /* estrutura das missoes */
 struct missao{
 
-	int id, perigo;
+	int id, perigo, tent;
 	struct cjto_t *habilidades;
 	struct coordenadas local;
 };
@@ -60,11 +66,13 @@ struct mundo * destroi_mundo(struct mundo *m);
 /* calcula a distancia cartesiana entre o ponto de origem e destino  */
 int calcula_distancia(struct coordenadas origem, struct coordenadas destino);
 
-/* retorna o indice do menor elemento em um vetor de inteiros de tamanho n */
-int min(int *v, int n);
-
-void imprime_estatisticas(struct mundo *m);
-
+/* Ordena um vetor de pares com n elementos */
+/* com base nos conteudos de maneira crescente */
+/* Usa o algoritmo de */
+void ordena_vetor_pares(struct par p[], int n);
+  
+//void imprime_estatisticas(struct mundo *m);
+  
 /* imprime um heroi e todos seus elementos  */
 void imprime_heroi(struct heroi h);
 
