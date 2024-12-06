@@ -257,26 +257,25 @@ void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missa
 void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
-	struct base *b_aux;
+	struct base b_aux;
 	struct cjto_t *habs_aux;
 
 	mis = &m->missoes[missao];
 	mis->tent++;
-	b_aux = NULL;
 
-	printf("%6d: MISSAO  %2d TENT %d HAB REQ: [ ", tempo, missao, mis->tent);
+	printf("%6d: MISSAO %2d TENT %d HAB REQ: [ ", tempo, missao, mis->tent);
 	cjto_imprime(mis->habilidades);
 	printf(" ]\n");
 
 
-	if(acha_base_apta(m, mis, b_aux, &habs_aux)){
+	if(acha_base_apta(m, mis, &b_aux, &habs_aux)){
 		
-		printf("%6d: MISSAO %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux->id);
+		printf("%6d: MISSAO %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux.id);
 		cjto_imprime(habs_aux);
 		printf(" ]\n");
 	}else{
 		
-		printf("%6d: MISSAO %2d IMPOSSIVEL", tempo, b_aux->id);
+		printf("%6d: MISSAO %2d IMPOSSIVEL\n", tempo, missao);
 	}
 
  /*  
