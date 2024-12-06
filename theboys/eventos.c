@@ -55,10 +55,10 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 			break;  
 		case MORRE:
 			morre(lef, m, e->tempo, e->item1, e->item2);
-			break;/*  
+			break;  
 		case MISSAO:
-			missao();
-			break;  */
+			missao(lef, m, e->tempo, e->item1);
+			break;
 	}
 }
 
@@ -74,13 +74,12 @@ void cria_eventos_iniciais(struct fprio_t *lef, struct mundo *m){
 		base_aleat = rand() % m->n_bases;
 		cria_evento(lef, CHEGA, tempo, i, base_aleat);
 	}
-/*  
+
 	for(i=0; i < m->n_missoes; i++){
 
 		tempo = rand() % m->fim;
-		cria_evento(f, MISSAO, tempo, NULL, NULL);
+		cria_evento(lef, MISSAO, tempo, i, -1);
 	}
-*/
 }
 
 void simulacao(struct fprio_t *lef, struct mundo *m){
@@ -258,25 +257,32 @@ void morre(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int missa
 void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
-	struct b_mais_prox;
+	struct base *b; //ponteiro para a base mais proxima
 	int *distancias;
-	int i, dist_mais_prox;
+	int i, dist; //distancia ate essa base
 
 	mis = &m->missoes[missao];
 	distancias = malloc(sizeof(int) * m->n_bases);
 
 	for(i = 0; i < m->n_bases; i++)
-		distancias[i] = calcula_distancia(mis->local, m->bases[i]);
+		distancias[i] = calcula_distancia(mis->local, m->bases[i].local);
 
-	dist_mais_prox = min(distancias);
-	b_mais_prox = &m->bases[dist_mais_prox];
+	dist = distancias[min(distancias, m->n_bases)];
+	b = &m->bases[min(distancias, m->n_bases)];
 	
-	printf("%6d: MISSAO  %d BASE %d DIST %d HEROIS\n", tempo, missao, b_mais_prox, dist_mais_prox);
+	printf("%6d: MISSAO  %2d BASE %d DIST %4d HEROIS [ ", tempo, missao, b->id, dist);
+	cjto_imprime(b->presentes);
+	printf(" ]\n");
+
+	fprio_tamanho(lef);
+//	cria_evento(lef, AVISA, );
 	free(distancias);
 	distancias = NULL;
 }
 
-void fim(int tempo){
+void fim(struct mundo *m, int tempo){
 
 	printf("%6d: FIM\n", tempo);
+
+	imprime_estatisticas(m);
 }

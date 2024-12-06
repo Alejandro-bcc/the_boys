@@ -106,6 +106,23 @@ struct mundo * destroi_mundo(struct mundo *m){
 	return NULL;
 }
 
+void imprime_estatisticas(struct mundo *m){
+
+	int i;
+
+	for(i=0; i < m->n_herois; i++){
+
+		printf("HEROI %2d ",i);
+
+		if(!m->herois[i].morto)
+			printf("VIVO ");
+		else
+			printf("MORTO ");
+
+		printf("PAC %3d VEL %4d EXP %4d HABS ", m->herois[i].pac);
+	}
+}
+
 int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
 
 	int aux;
