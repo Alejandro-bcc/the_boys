@@ -258,7 +258,7 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
 	struct base *b_aux;	
-	struct par *distancias;
+	struct par *distancias; //vetor com as distancias e os indices das respectivas bases
 	int i, dist;
 
 	mis = &m->missoes[missao];
@@ -275,21 +275,17 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 		distancias[i].cont = calcula_distancia(mis->local, m->bases[i].local);
 	}
 
-	printf("Bases candidatas:\n");
-	for(i=0; i < m->n_bases; i++)
-		printf("	BASE %d DIST %5d\n", distancias[i].id, distancias[i].cont);
-
 	ordena_vetor_pares(distancias, m->n_bases);
 
-	b_aux = &m->bases[distancias[0].id];
-	dist = distancias[0].cont;
+	i = 0;
 
+	b_aux = &m->bases[distancia[i].id];
 
-
-	printf("Bases candidatas:\n");
-	for(i=0; i < m->n_bases; i++)
-		printf("	BASE %d DIST %5d\n", distancias[i].id, distancias[i].cont);
-
+	while(i < m->n_bases && !base_apta(m, mis, b_aux)){
+		
+		b_aux = &m->bases[distancia[i].id];
+		i++;
+	}
   
 	printf("%6d: MISSAO  %2d BASE %d DIST %5d HEROIS [ ", tempo, missao, b_aux->id, dist);
 	cjto_imprime(b_aux->presentes);

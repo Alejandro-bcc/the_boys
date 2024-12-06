@@ -7,9 +7,7 @@ int main(){
 	srand(0);
 	struct mundo *m;
 	struct fprio_t *lef;
-	m = NULL;
-	lef = NULL;
-	lef = malloc(sizeof(struct fprio_t));
+	lef = fprio_cria();
 	m = cria_mundo();
 	cria_eventos_iniciais(lef, m);
 	simulacao(lef, m);

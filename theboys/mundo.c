@@ -135,22 +135,51 @@ int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
 
 void ordena_vetor_pares(struct par p[], int n){
 
-	struct par aux;
-	int i, j;
+    struct par aux;
+    int i, j;
 
-	for(i=0; i < n; i++){
+    for(i = 1; i < n; i++){
 
-		j = i - 1;
-		if(j >= 0)
-			printf("\n%d < %d",p[i].cont, p[j].cont);
-		while(j >= 0 && p[i].cont < p[j].cont){
-			printf(" troca %d e %d\n", p[j].cont, p[i].cont);
-			aux = p[i];
-			p[i] = p[j];
-			p[j] = aux;
-			j--;
+        aux = p[i];
+        j = i - 1;
+
+        while(j >= 0 && p[j].cont > aux.cont){
+            p[j + 1] = p[j];
+            j--;
+        }
+        p[j + 1] = aux;
+    }
+}
+
+int base_apta(struct mundo *m, struct missao *mis, struct base *b){
+
+	struct cjto *c_aux1; //armezena temporariamente as habs. dos herois de b
+	struct cjto *c_aux2; //auxiliar que evita o vazamento de memoria
+	struct heroi h_aux;
+	int i;
+
+	/* erro, ponteiro invalido */
+	if(m == NULL || mis == NULL || b == NULL)
+		return -1;
+	
+	c_aux = cjto_cria(m->n_habilidades);
+
+	for(i=0; i < m->n_herois; i++){
+
+		h_aux = &m->herois[i];
+
+		if(cjto_pertence(b->presentes, i)){
+
+			c_aux2 = cjto_uniao(c_aux1, h_aux->habilidades);
+			cjto_destroi(c_aux1);
+			c_aux1 = aux;
 		}
 	}
+
+	if(cjto_contem(c_aux1, mis->habilidades))
+		return 1;
+	
+	return 0;
 }
 
 void imprime_heroi(struct heroi h){

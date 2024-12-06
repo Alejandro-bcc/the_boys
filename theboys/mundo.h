@@ -68,8 +68,14 @@ int calcula_distancia(struct coordenadas origem, struct coordenadas destino);
 
 /* Ordena um vetor de pares com n elementos */
 /* com base nos conteudos de maneira crescente */
-/* Usa o algoritmo de */
+/* Usa o algoritmo de Insertion Sort */
 void ordena_vetor_pares(struct par p[], int n);
+
+/* Detecta se uma base eh apta para uma missao */
+/* Ou seja, a uniao das habilidades dos herois da base */
+/* cumpre com as habilidades requeridas pela missao */
+/* Retorno: 1 se a base for apta, 0 se não for ou -1 em erro */
+int base_apta(struct mundo *m ,struct missao mis, struct base b);
   
 //void imprime_estatisticas(struct mundo *m);
   
