@@ -54,7 +54,7 @@ struct missao{
 /* estrutura do mundo */
 struct mundo{
 
-	int n_herois, n_bases, n_missoes, n_habilidades, inicio, fim;
+	int n_herois, n_bases, n_missoes, n_habilidades, n_eventos, inicio, fim;
 	struct heroi *herois;
 	struct base *bases;
 	struct missao *missoes;
@@ -83,13 +83,13 @@ void ordena_vetor_pares(struct par p[], int n);
 /* Devolve o conjunto das habilidades dos herois da base */
 /* no parametro "habs" */
 /* Retorno: 1 se a base for apta, 0 se não for ou -1 em erro */
-int base_apta(struct mundo *m ,struct missao *mis, struct base *b, struct cjto_t *habs);
+int base_apta(struct mundo *m ,struct missao *mis, struct base b, struct cjto_t *habs);
 
 /* Acha a base apta mais proxima à missao mis */
 /* O ponteiro para a base achada e o conjunto das habilidades */
 /* dos herois da base sao devolvidos nos parametros "b" e "habs" */
 /* Retorno: 0 se não houver uma base apta, 1 se houver e -1 em erro */
-int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t *habs);
+struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t *habs);
   
 void imprime_estatisticas(struct mundo *m);
   
