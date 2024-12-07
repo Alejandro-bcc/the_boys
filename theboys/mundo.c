@@ -61,6 +61,8 @@ struct mundo * cria_mundo(){
 		novo->bases[i].local.x = rand() % TAMANHO;
 		novo->bases[i].local.y = rand() % TAMANHO;
 		novo->bases[i].lotacao = (rand() % 8) + 3;
+		novo->bases[i].fila_max = 0;
+		novo->bases[i].mis_part = 0;
 		novo->bases[i].presentes = cjto_cria(novo->n_herois);
 		novo->bases[i].espera = lista_cria(); //fila 
 	}
@@ -106,24 +108,7 @@ struct mundo * destroi_mundo(struct mundo *m){
 	free(m);
 	return NULL;
 }
-/*  
-void imprime_estatisticas(struct mundo *m){
 
-	int i;
-
-	for(i=0; i < m->n_herois; i++){
-
-		printf("HEROI %2d ",i);
-
-		if(!m->herois[i].morto)
-			printf("VIVO ");
-		else
-			printf("MORTO ");
-
-		printf("PAC %3d VEL %4d EXP %4d HABS ", m->herois[i].pac);
-	}
-}
-  */
 int calcula_distancia(struct coordenadas origem, struct coordenadas destino){
 
 	int aux;
@@ -151,10 +136,10 @@ void ordena_vetor_pares(struct par p[], int n){
     }
 }
 
-int base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t **habs){
+int base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t *habs){
 
 	struct cjto_t *c_aux1; //armezena temporariamente as habs. dos herois de b
-	struct cjto_t *c_aux2; //auxiliar que evita o vazamento de memoria
+//	struct cjto_t *c_aux2; //auxiliar que evita o vazamento de memoria
 	struct heroi *h_aux;
 	int i;
 
@@ -170,29 +155,32 @@ int base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t
 
 		if(cjto_pertence(b->presentes, i)){
 
-			c_aux2 = cjto_uniao(c_aux1, h_aux->habilidades);
-			cjto_destroi(c_aux1);
-			c_aux1 = c_aux2;
+			c_aux1 = cjto_uniao(c_aux1, h_aux->habilidades);
+//			cjto_destroi(c_aux1);
+//			c_aux1 = c_aux2;
 		}
 	}
 
 	if(cjto_contem(c_aux1, mis->habilidades)){
 
-		*habs = c_aux1;
+		*habs = *c_aux1;
+		c_aux1 = cjto_destroi(c_aux1);
+		//c_aux2 = cjto_destroi(c_aux2);
 		h_aux = NULL;
 		return 1;
 	}
 
-	*habs = NULL;
 	h_aux = NULL;
+	c_aux1 = cjto_destroi(c_aux1);
+	//c_aux2 = cjto_destroi(c_aux2);
 	return 0;
 }
 
-int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t **habs){
+int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t *habs){
 
 	/* vetor com as distancias e os indices das respectivas bases ate a missao */
 	struct par *dist;
-	struct cjto_t *c_aux;
+	//struct cjto_t c_aux;
 	int i;
 
 	/* erro, ponteiro invalidos */
@@ -214,30 +202,55 @@ int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct c
 
 	i = 0;
 
-	while(i < m->n_bases && !base_apta(m, mis, &m->bases[dist[i].id], &c_aux))
+	while(i < m->n_bases && !base_apta(m, mis, &m->bases[dist[i].id], habs))
 		i++;
 
 	/* verifica se há uma base apta */
 	if(i < m->n_bases){
 		
-		b = &m->bases[dist[i].id];
-		printf(" ");
-		cjto_imprime(b->presentes);
-		*habs = c_aux;
+		*b = m->bases[dist[i].id];
 		free(dist);
 		dist = NULL;
-		c_aux = NULL;
 		return 1;
 	}
 
 	b = NULL;
-	*habs = NULL;
 	free(dist);
 	dist = NULL;
-	c_aux = NULL;
 	return 0;
 }
 
+void imprime_estatisticas(struct mundo *m){
+
+	struct heroi h_aux;
+	struct base b_aux;
+	int i;
+
+	for(i=0; i < m->n_herois; i++){
+
+		h_aux = m->herois[i];
+
+		printf("HEROI %2d ",i);
+
+		if(!m->herois[i].morto)
+			printf("VIVO  ");
+		else
+			printf("MORTO ");
+
+		printf("PAC %3d VEL %4d EXP %4d HABS [ ", h_aux.paciencia, h_aux.velocidade, h_aux.experiencia);
+		cjto_imprime(h_aux.habilidades);
+		printf(" ]\n");
+	}
+
+	printf("\n");
+
+	for(i=0; i < m->n_bases; i++){
+
+		b_aux = m->bases[i];
+		printf("BASE %d LOT %d FILA MAX %d MISSOES %d\n", i, b_aux.lotacao, b_aux.fila_max, b_aux.mis_part);
+	}
+}
+  
 void imprime_heroi(struct heroi h){
 	
 	printf("Heroi: \n");

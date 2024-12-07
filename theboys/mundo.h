@@ -31,7 +31,10 @@ struct heroi{
 /* estrutura das bases */
 struct base{
 
-	int id, lotacao;
+	int id, 
+		lotacao,
+		fila_max,
+		mis_part; //missoes participadas
 	struct cjto_t *presentes;
 	struct lista_t *espera;
 	struct coordenadas local;
@@ -40,7 +43,10 @@ struct base{
 /* estrutura das missoes */
 struct missao{
 
-	int id, perigo, tent;
+	int id, 
+		perigo, 
+		tent, 
+		cump; //0 se a missao nao foi cumprida 1 se foi
 	struct cjto_t *habilidades;
 	struct coordenadas local;
 };
@@ -77,15 +83,15 @@ void ordena_vetor_pares(struct par p[], int n);
 /* Devolve o conjunto das habilidades dos herois da base */
 /* no parametro "habs" */
 /* Retorno: 1 se a base for apta, 0 se não for ou -1 em erro */
-int base_apta(struct mundo *m ,struct missao *mis, struct base *b, struct cjto_t **habs);
+int base_apta(struct mundo *m ,struct missao *mis, struct base *b, struct cjto_t *habs);
 
 /* Acha a base apta mais proxima à missao mis */
 /* O ponteiro para a base achada e o conjunto das habilidades */
 /* dos herois da base sao devolvidos nos parametros "b" e "habs" */
 /* Retorno: 0 se não houver uma base apta, 1 se houver e -1 em erro */
-int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t **habs);
+int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct cjto_t *habs);
   
-//void imprime_estatisticas(struct mundo *m);
+void imprime_estatisticas(struct mundo *m);
   
 /* imprime um heroi e todos seus elementos  */
 void imprime_heroi(struct heroi h);

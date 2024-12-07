@@ -30,7 +30,7 @@ void executa_evento(struct fprio_t *lef, struct mundo *m, struct evento *e){
 
 	switch(e->tipo){
 		case FIM:
-			fim(e->tempo);
+			fim(m, e->tempo);
 			break;
 		case CHEGA:
 			chega(lef, m, e->tempo, e->item1, e->item2);
@@ -144,6 +144,11 @@ void espera(struct fprio_t *lef, struct mundo *m, int tempo, int heroi, int base
 
 	printf("%6d: ESPERA  HEROI %2d BASE %d (%2d )\n", tempo, heroi, base, lista_tamanho(b->espera));
 	lista_insere(b->espera, h->id, -1);
+
+	/* atualiza o fila max da base, se necessrio  */
+	if(lista_tamanho(b->espera) > b->fila_max)
+		b->fila_max = lista_tamanho(b->espera);
+
 	cria_evento(lef, AVISA, tempo, base, -1);
 }
 
@@ -174,12 +179,11 @@ void avisa(struct fprio_t *lef, struct mundo *m, int tempo, int base){
 
 	while(vagas != 0 && lista_tamanho(b->espera) != 0){
 
-		lista_consulta(b->espera, &heroi_fila, 0);
 		lista_retira(b->espera, &heroi_fila, 0);
 		cjto_insere(b->presentes, heroi_fila);
 		cria_evento(lef, ENTRA, tempo, heroi_fila, base);
-		vagas--;
 		printf("%6d: AVISA   PORTEIRO BASE %d ADMITE %2d\n", tempo, base, heroi_fila);	
+		vagas--;
 	}
 }
 
@@ -258,7 +262,9 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
 	struct base b_aux;
-	struct cjto_t *habs_aux;
+	struct cjto_t habs_aux;
+	struct heroi *h_aux;
+	int i, risco;
 
 	mis = &m->missoes[missao];
 	mis->tent++;
@@ -270,14 +276,33 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	if(acha_base_apta(m, mis, &b_aux, &habs_aux)){
 
-		printf("%6d: MISSAO %2d CUMPRIDA BASE ", tempo, missao);
-		printf("%d HABS: [ \n", b_aux.id);
-		printf(" \n ");
-		printf(" ] ");
+		mis->cump = 1;
+		printf("%6d: MISSAO %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux.id);
+		cjto_imprime(&habs_aux);
+		printf(" ]\n");
+		
+		for(i=0; i < m->n_herois; i++){
 
+			if(cjto_pertence(b_aux.presentes, i)){
+				
+				h_aux = &m->herois[i];
+				risco = mis->perigo / (h_aux->paciencia + h_aux->experiencia + 1);
+			}
+
+			if(risco > rand() % 31){
+
+				cria_evento(lef, MORRE, tempo, i, missao);
+			}else{
+
+				h_aux->experiencia++;
+			}
+
+		}
+		
 	}else{
 		
 		printf("%6d: MISSAO %2d IMPOSSIVEL\n", tempo, missao);
+		cria_evento(lef, MISSAO, tempo + 24*60, missao, -1);
 	}
 
  /*  
@@ -287,13 +312,12 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
     */
 
 	fprio_tamanho(lef);
-	  
 //	cria_evento(lef, AVISA, );
 }
 
-void fim(/* struct mundo *m,  */ int tempo){
+void fim(struct mundo *m, int tempo){
 
-	printf("%6d: FIM\n", tempo);
+	printf("%6d: FIM\n\n", tempo);
 
-	//imprime_estatisticas(m);
+	imprime_estatisticas(m);
 }
