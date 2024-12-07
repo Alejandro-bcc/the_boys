@@ -6,7 +6,7 @@
 #include "mundo.h"
 
 #define INICIO 0
-#define FIM 5000
+#define FIM 4600
 #define HABILIDADES 10
 #define TAMANHO 20000
 
@@ -219,7 +219,7 @@ int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct c
 
 	/* verifica se há uma base apta */
 	if(i < m->n_bases){
-	
+		
 		b = &m->bases[dist[i].id];
 		*habs = c_aux;
 		free(dist);

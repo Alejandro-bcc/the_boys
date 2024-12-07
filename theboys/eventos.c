@@ -269,10 +269,12 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 
 	if(acha_base_apta(m, mis, &b_aux, &habs_aux)){
-		
-		printf("%6d: MISSAO %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux.id);
-		cjto_imprime(habs_aux);
-		printf(" ]\n");
+
+		printf("%6d: MISSAO %2d CUMPRIDA BASE ", tempo, missao);
+		printf("%d HABS: [ \n", b_aux.id);
+		cjto_imprime(habs_aux);		
+		printf(" ] ");
+
 	}else{
 		
 		printf("%6d: MISSAO %2d IMPOSSIVEL\n", tempo, missao);
