@@ -290,21 +290,21 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 		
 		for(i=0; i < m->n_herois; i++){
 			
-			risco = 0; 
 			h_aux = &m->herois[i];
 
-			if(cjto_pertence(b_aux->presentes, i))
+			if(cjto_pertence(b_aux->presentes, i)){
+
 				risco = mis->perigo / (h_aux->paciencia + h_aux->experiencia + 1.0);
 			
-			aleat = rand() % 31;
-			printf("\n risco: %d  aleat: %d\n", risco, aleat);
-			if(risco > aleat){
-
-				cria_evento(lef, MORRE, tempo, i, missao);
-
-			}else{
-
-				h_aux->experiencia++;
+				aleat = rand() % 31;
+				if(risco > aleat){
+	
+					cria_evento(lef, MORRE, tempo, i, missao);
+	
+				}else{
+	
+					h_aux->experiencia++;
+				}
 			}
 		}
 
