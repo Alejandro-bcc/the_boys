@@ -11,6 +11,7 @@ int main(){
 	m = cria_mundo();
 	cria_eventos_iniciais(lef, m);
 	simulacao(lef, m);
+	imprime_mundo(m);
 	m = destroi_mundo(m);
 	lef = fprio_destroi(lef);
 	return 0;

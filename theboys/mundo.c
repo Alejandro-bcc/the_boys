@@ -6,7 +6,7 @@
 #include "mundo.h"
 
 #define INICIO 0
-#define FIM 4600
+#define FIM 525600
 #define HABILIDADES 10
 #define TAMANHO 20000
 
@@ -22,7 +22,7 @@ struct mundo * cria_mundo(){
 	novo->fim = FIM;
 	novo->n_habilidades = HABILIDADES;
 	novo->n_herois = novo->n_habilidades * 5;
-	novo->n_bases = 10;
+	novo->n_bases = novo->n_herois / 5;
 	novo->n_missoes = novo->fim / 100;
 	novo->n_eventos = 0;
 	novo->maximos.x = TAMANHO;
@@ -51,7 +51,7 @@ struct mundo * cria_mundo(){
 		novo->herois[i].id = i;
 		novo->herois[i].experiencia = 0;
 		novo->herois[i].paciencia = rand() % 101;
-		novo->herois[i].velocidade = (rand() % 4051) + 50;
+		novo->herois[i].velocidade = (rand() % 4951) + 50;
 		novo->herois[i].morto = 0;
 		novo->herois[i].habilidades = cjto_aleat((rand() % 3 ) + 1, novo->n_habilidades);
 	}
@@ -137,47 +137,6 @@ void ordena_vetor_pares(struct par p[], int n){
         p[j + 1] = aux;
     }
 }
-/*   
-int base_apta(struct mundo *m, struct missao *mis, struct base b, struct cjto_t *habs){
-
-	struct cjto_t *c_aux1; //armezena temporariamente as habs. dos herois de b
-//	struct cjto_t *c_aux2; //auxiliar que evita o vazamento de memoria
-	struct heroi *h_aux;
-	int i;
-
-	/ erro, ponteiro invalido /
-	if(m == NULL || mis == NULL)
-		return -1;
-	
-	c_aux1 = cjto_cria(m->n_habilidades);
-
-	for(i=0; i < m->n_herois; i++){
-
-		h_aux = &m->herois[i];
-
-		if(cjto_pertence(b.presentes, i)){
-
-			c_aux1 = cjto_uniao(c_aux1, h_aux->habilidades);
-//			cjto_destroi(c_aux1);
-//			c_aux1 = c_aux2;
-		}
-	}
-
-	if(cjto_contem(c_aux1, mis->habilidades)){
-
-		*habs = *c_aux1;
-		c_aux1 = cjto_destroi(c_aux1);
-		//c_aux2 = cjto_destroi(c_aux2);
-		h_aux = NULL;
-		return 1;
-	}
-
-	h_aux = NULL;
-	c_aux1 = cjto_destroi(c_aux1);
-	//c_aux2 = cjto_destroi(c_aux2);
-	return 0;
-}
-   */
 
 struct cjto_t * base_apta(struct mundo *m, struct missao mis, struct base b){
 
@@ -197,9 +156,6 @@ struct cjto_t * base_apta(struct mundo *m, struct missao mis, struct base b){
 
 			h_aux = m->herois[i];
 		
-			printf("\nheroi %d esta presente na base %d e tem as habilidades [ ", i, b.id);
-			cjto_imprime(h_aux.habilidades);
-			printf(" ]\n");
 			c_aux2 = cjto_uniao(c_aux1, h_aux.habilidades);
 			c_aux1 = cjto_destroi(c_aux1);
 			c_aux1 = c_aux2;
@@ -209,11 +165,10 @@ struct cjto_t * base_apta(struct mundo *m, struct missao mis, struct base b){
 	c_aux2 = NULL;
 
 	if(!(cjto_contem(c_aux1, mis.habilidades))){
-
-		free(c_aux1);
-		c_aux1 = NULL;
-	}
 		
+		c_aux1 = cjto_destroi(c_aux1);
+	}
+
 	return c_aux1;
 }
 
@@ -241,26 +196,32 @@ struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t 
 	}
 
 	ordena_vetor_pares(dist, m->n_bases);
-
-	i = 0;
 /*   
-	while(i < m->n_bases && !base_apta(m, mis, m->bases[dist[i].id], habs))
-		i++;
-  */
-	/* verifica se há uma base apta 
-	if(i < m->n_bases){
+	for(i = 0; i < m->n_bases; i++){
 		
-		b_aux = &m->bases[dist[i].id];
-		free(dist);
-		dist = NULL;
-		return b_aux;
+		printf("\n base %d dist %d\n", dist[i].id, dist[i].cont);
 	}
   */
+	i = 0;
 	b_aux = &m->bases[dist[i].id];
-	//*habs = mis->habilidades;
+	*habs = base_apta(m, *mis, *b_aux);
+
+	while(i < m->n_bases && *habs == NULL){
+		
+		i++;
+
+		if(i < m->n_bases){
+			b_aux = &m->bases[dist[i].id];
+			*habs = base_apta(m, *mis, *b_aux);
+		}
+	}	
+   
+	/* verifica se nao há uma base apta  */
+	if(i == m->n_bases)
+		b_aux = NULL;
+
 	free(dist);
 	dist = NULL;
-	*habs = base_apta(m, *mis, *b_aux);
 	return b_aux;
 }
 
@@ -393,13 +354,13 @@ void imprime_mundo(struct mundo *m){
 		printf("%d ", i);
 		imprime_heroi(m->herois[i]);
 	}
-
+/*   
 	for(i=0; i < m->n_bases; i++){
 
 		printf("%d ", i);
 		imprime_base(m->bases[i]);
 	}
-/*  
+
 	for(i=0; i < m->n_missoes; i++){
 
 		printf("%d ", i);
