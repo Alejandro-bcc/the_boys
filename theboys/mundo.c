@@ -21,8 +21,8 @@ struct mundo * cria_mundo(){
 	novo->inicio = INICIO;
 	novo->fim = FIM;
 	novo->n_habilidades = HABILIDADES;
-	novo->n_herois = novo->n_habilidades;
-	novo->n_bases = novo->n_herois / 3;
+	novo->n_herois = novo->n_habilidades * 5;
+	novo->n_bases = 10;
 	novo->n_missoes = novo->fim / 100;
 	novo->n_eventos = 0;
 	novo->maximos.x = TAMANHO;
@@ -61,7 +61,7 @@ struct mundo * cria_mundo(){
 		novo->bases[i].id = i;
 		novo->bases[i].local.x = rand() % TAMANHO;
 		novo->bases[i].local.y = rand() % TAMANHO;
-		novo->bases[i].lotacao = (rand() % 2) + 1;
+		novo->bases[i].lotacao = (rand() % 8) + 3;
 		novo->bases[i].fila_max = 0;
 		novo->bases[i].mis_part = 0;
 		novo->bases[i].presentes = cjto_cria(novo->n_herois);
@@ -137,7 +137,7 @@ void ordena_vetor_pares(struct par p[], int n){
         p[j + 1] = aux;
     }
 }
-
+/*   
 int base_apta(struct mundo *m, struct missao *mis, struct base b, struct cjto_t *habs){
 
 	struct cjto_t *c_aux1; //armezena temporariamente as habs. dos herois de b
@@ -145,7 +145,7 @@ int base_apta(struct mundo *m, struct missao *mis, struct base b, struct cjto_t 
 	struct heroi *h_aux;
 	int i;
 
-	/* erro, ponteiro invalido */
+	/ erro, ponteiro invalido /
 	if(m == NULL || mis == NULL)
 		return -1;
 	
@@ -177,8 +177,47 @@ int base_apta(struct mundo *m, struct missao *mis, struct base b, struct cjto_t 
 	//c_aux2 = cjto_destroi(c_aux2);
 	return 0;
 }
+   */
 
-struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t *habs){
+struct cjto_t * base_apta(struct mundo *m, struct missao mis, struct base b){
+
+	struct cjto_t *c_aux1;
+	struct cjto_t *c_aux2;
+	struct heroi h_aux;
+	int i;
+
+	if(cjto_card(b.presentes) == 0)
+		return NULL;
+
+	c_aux1 = cjto_cria(m->n_habilidades);
+
+	for(i=0; i < m->n_herois; i++){
+		
+		if(cjto_pertence(b.presentes, i)){
+
+			h_aux = m->herois[i];
+		
+			printf("\nheroi %d esta presente na base %d e tem as habilidades [ ", i, b.id);
+			cjto_imprime(h_aux.habilidades);
+			printf(" ]\n");
+			c_aux2 = cjto_uniao(c_aux1, h_aux.habilidades);
+			c_aux1 = cjto_destroi(c_aux1);
+			c_aux1 = c_aux2;
+		}
+	}
+
+	c_aux2 = NULL;
+
+	if(!(cjto_contem(c_aux1, mis.habilidades))){
+
+		free(c_aux1);
+		c_aux1 = NULL;
+	}
+		
+	return c_aux1;
+}
+
+struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t **habs){
 
 	/* vetor com as distancias e os indices das respectivas bases ate a missao */
 	struct par *dist;
@@ -204,11 +243,11 @@ struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t 
 	ordena_vetor_pares(dist, m->n_bases);
 
 	i = 0;
-
+/*   
 	while(i < m->n_bases && !base_apta(m, mis, m->bases[dist[i].id], habs))
 		i++;
-
-	/* verifica se há uma base apta */
+  */
+	/* verifica se há uma base apta 
 	if(i < m->n_bases){
 		
 		b_aux = &m->bases[dist[i].id];
@@ -216,10 +255,13 @@ struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t 
 		dist = NULL;
 		return b_aux;
 	}
-
+  */
+	b_aux = &m->bases[dist[i].id];
+	//*habs = mis->habilidades;
 	free(dist);
 	dist = NULL;
-	return NULL;
+	*habs = base_apta(m, *mis, *b_aux);
+	return b_aux;
 }
 
 void imprime_estatisticas(struct mundo *m){

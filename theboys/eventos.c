@@ -76,12 +76,12 @@ void cria_eventos_iniciais(struct fprio_t *lef, struct mundo *m){
 		base_aleat = rand() % m->n_bases;
 		cria_evento(lef, CHEGA, tempo, i, base_aleat);
 	}
-    /*   
+      
 	for(i=0; i < m->n_missoes; i++){
 
 		tempo = rand() % m->fim;
 		cria_evento(lef, MISSAO, tempo, i, -1);
-	}   */
+	}   
 }
 
 void simulacao(struct fprio_t *lef, struct mundo *m){
@@ -264,29 +264,27 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 	struct missao *mis;
 	struct base *b_aux;    
-	struct cjto_t habs_aux;
+	struct cjto_t *habs_aux;
 	struct heroi *h_aux;
 	int i, risco;
 
 	mis = &m->missoes[missao];
 	mis->tent++;
 
-	printf("%6d: MISSAO %2d TENT %d HAB REQ: [ ", tempo, missao, mis->tent);
+	printf("%6d: MISSAO  %2d TENT %d HAB REQ: [ ", tempo, missao, mis->tent);
 	cjto_imprime(mis->habilidades);
 	printf(" ]\n");
-/*   
-	b_aux = acha_base_apta(m, mis, &habs_aux);
-  */
 
-  	b_aux = &m->bases[rand() % m->n_bases];
-	habs_aux = *mis->habilidades;
+	b_aux = acha_base_apta(m, mis, &habs_aux);
+
+ // b_aux = &m->bases[rand() % m->n_bases];
 
 	if(b_aux != NULL){
 
 		mis->cump = 1;
 		b_aux->mis_part++;
-		printf("%6d: MISSAO %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux->id);
-		cjto_imprime(&habs_aux);
+		printf("%6d: MISSAO  %2d CUMPRIDA BASE %d HABS: [ ", tempo, missao, b_aux->id);
+		cjto_imprime(habs_aux);
 		printf(" ]\n");
 		
 		for(i=0; i < m->n_herois; i++){
@@ -306,9 +304,8 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 				h_aux->experiencia++;
 			}
-
 		}
-		
+
 	}else{
 		
 		printf("%6d: MISSAO %2d IMPOSSIVEL\n", tempo, missao);
@@ -322,6 +319,7 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
     */
 
 	fprio_tamanho(lef);
+	habs_aux = cjto_destroi(habs_aux);
 //	cria_evento(lef, AVISA, );
 }
 
