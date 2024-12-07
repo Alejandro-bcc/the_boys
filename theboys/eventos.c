@@ -272,7 +272,7 @@ void missao(struct fprio_t *lef, struct mundo *m, int tempo, int missao){
 
 		printf("%6d: MISSAO %2d CUMPRIDA BASE ", tempo, missao);
 		printf("%d HABS: [ \n", b_aux.id);
-		cjto_imprime(habs_aux);		
+		printf(" \n ");
 		printf(" ] ");
 
 	}else{

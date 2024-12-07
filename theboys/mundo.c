@@ -221,6 +221,8 @@ int acha_base_apta(struct mundo *m, struct missao *mis, struct base *b, struct c
 	if(i < m->n_bases){
 		
 		b = &m->bases[dist[i].id];
+		printf(" ");
+		cjto_imprime(b->presentes);
 		*habs = c_aux;
 		free(dist);
 		dist = NULL;
