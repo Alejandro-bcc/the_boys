@@ -298,5 +298,5 @@ void imprime_estatisticas(struct mundo *w){
 
 	decimal_aux = (float)(n_h_mortos * 100)/w->n_herois;
 
-	printf("TAXA DE MORTALIDADE: %.1f%%", decimal_aux);
+	printf("TAXA DE MORTALIDADE: %.1f%%\n", decimal_aux);
 }

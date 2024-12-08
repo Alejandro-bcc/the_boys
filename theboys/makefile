@@ -36,7 +36,7 @@ valgrind: $(MAIN)
 tgz: clean
 	-mkdir -p /tmp/$(USER)/$(ENTREGA)
 	chmod 0700 /tmp/$(USER)/$(ENTREGA)
-	cp *.c *.h makefile /tmp/$(USER)/$(ENTREGA)
+	cp *.c *.h conjunto.o makefile /tmp/$(USER)/$(ENTREGA)
 	tar czvf $(ENTREGA).tgz -C /tmp/$(USER) $(ENTREGA)
 	rm -rf /tmp/$(USER)
 	@echo "Arquivo $(ENTREGA).tgz criado para entrega"
