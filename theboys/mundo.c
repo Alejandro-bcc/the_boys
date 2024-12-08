@@ -13,9 +13,11 @@ struct mundo * cria_mundo(){
 	struct mundo *novo;
 	int i;
 
+	/* Alocacao mal-sucedida */
 	if(!(novo = malloc(sizeof(struct mundo))))
 		return NULL;
 
+	/* Inicializa o mundo */
 	novo->inicio = INICIO;
 	novo->fim = FIM;
 	novo->n_habs = HABILIDADES;
@@ -26,18 +28,21 @@ struct mundo * cria_mundo(){
 	novo->max.x = TAMANHO;
 	novo->max.y = TAMANHO;
 
+	/* Alocacao mal-sucedida */
 	if(!(novo->herois = malloc(sizeof(struct heroi) * novo->n_herois))){
 
 		free(novo);
 		return NULL;
 	}
 
+	/* Alocacao mal-sucedida */
 	if(!(novo->bases = malloc(sizeof(struct base) * novo->n_bases))){
 
 		free(novo);
 		return NULL;
 	}
 
+	/* Alocacao mal-sucedida */
 	if(!(novo->missoes = malloc(sizeof(struct missao) * novo->n_missoes))){
 		
 		free(novo);
@@ -115,6 +120,7 @@ struct mundo * destroi_mundo(struct mundo *w){
 	free(w->missoes);
 	w->missoes = NULL;
 
+	/* Libera a memoria do mundo */
 	free(w);
 	return NULL;
 }
@@ -218,8 +224,8 @@ void imprime_estatisticas(struct mundo *w){
 
 	struct heroi h_aux;
 	struct base b_aux;
-	struct missao mis_aux;
-	int i, n_h_mortos, mis_cump, min_tent, max_tent, total_tent;
+	struct missao m_aux;
+	int i, n_h_mortos, m_cump, min_tent, max_tent, total_tent;
 	float decimal_aux;
 
 	/* erro, ponteiro invalido */
@@ -227,7 +233,12 @@ void imprime_estatisticas(struct mundo *w){
 		return;
 
 	n_h_mortos = 0;
+	m_cump = 0;
+	total_tent = 0;
+	min_tent = w->missoes[0].tent;
+	max_tent = w->missoes[0].tent;
 
+	/* Imprime informacoes dos herois  */
 	for(i=0; i < w->n_herois; i++){
 
 		h_aux = w->herois[i];
@@ -244,7 +255,6 @@ void imprime_estatisticas(struct mundo *w){
 			n_h_mortos++;
 		}
 
-
 		printf("PAC %3d VEL %4d EXP %4d HABS [ ", h_aux.pac, h_aux.vel, h_aux.exp);
 		cjto_imprime(h_aux.habs);
 		printf(" ]\n");
@@ -252,40 +262,36 @@ void imprime_estatisticas(struct mundo *w){
 
 	printf("\n");
 
+	/* Imprime informacoes das bases */
 	for(i=0; i < w->n_bases; i++){
 
 		b_aux = w->bases[i];
 		printf("BASE %d LOT %d FILA MAX %d MISSOES %d\n", i, b_aux.lot, b_aux.fila_max, b_aux.miss_part);
 	}
 
-	mis_cump = 0;
-	total_tent = 0;
-	min_tent = w->missoes[0].tent;
-	max_tent = w->missoes[0].tent;
-
+	/* Conta o numero de missoes cumpridas e determina o minimo e maximo de tentativas */
 	for(i=0; i < w->n_missoes; i++){
 	
-		mis_aux = w->missoes[i];
-		total_tent += mis_aux.tent;
+		m_aux = w->missoes[i];
+		total_tent += m_aux.tent;
 
-		if(mis_aux.cump)
-			mis_cump++;
+		if(m_aux.cump)
+			m_cump++;
 
-		if(mis_aux.tent > max_tent)
-			max_tent = mis_aux.tent;
+		if(m_aux.tent > max_tent)
+			max_tent = m_aux.tent;
 
 
-		if(mis_aux.tent < min_tent)
-			min_tent = mis_aux.tent;
-
+		if(m_aux.tent < min_tent)
+			min_tent = m_aux.tent;
 	}
 
-	decimal_aux = (float)(mis_cump * 100)/w->n_missoes;
+	decimal_aux = (float)(m_cump * 100)/w->n_missoes;
 
 	printf("\n");
 
 	printf("EVENTOS TRATADOS: %d\n", w->n_eventos);
-	printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", mis_cump, w->n_missoes, decimal_aux);
+	printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", m_cump, w->n_missoes, decimal_aux);
 	
 	decimal_aux = (float)(total_tent / w->n_missoes);
 
@@ -295,70 +301,3 @@ void imprime_estatisticas(struct mundo *w){
 
 	printf("TAXA DE MORTALIDADE: %.1f%%", decimal_aux);
 }
-/*   
-void imprime_heroi(struct heroi h){
-	
-	printf("Heroi: \n");
-	printf("ID: %d\n", h.id);
-	printf("Paciencia: %d\n", h.pac);
-	printf("Velocidade: %d\n", h.velocidade);
-	printf("Experiencia: %d\n", h.exp);
-	printf("ID da base: %d\n", h.id_base);
-	printf("Habilidades: ");
-	cjto_imprime(h.habs);
-	printf("\n");
-}
-
-void imprime_base(struct base b){
-
-	printf("Base: \n");
-	printf("ID: %d\n", b.id);
-	printf("Lotacao: %d\n", b.lot);
-	printf("Local: (%d,%d)\n", b.local.x, b.local.y);
-}
-
-void imprime_missao(struct missao ms){	
-
-	printf("Missao: \n");
-	printf("ID: %d\n", ms.id);
-	printf("Perigo: %d\n", ms.perigo);
-	printf("Habilidades: ");
-	cjto_imprime(ms.habs);
-	printf("\n");
-	printf("Local: (%d,%d)\n", ms.local.x, ms.local.y);
-}
-
-void imprime_mundo(struct mundo *m){
-	
-	int i;
-
-	if(m == NULL)
-		return;
-
-	printf("Mundo:\n");
-	printf("Tempo inicial: %d\n", m->inicio);
-	printf("Tempo final: %d\n", m->fim);
-	printf("Tamanho do mundo: %d\n", m->max.x);
-	printf("n_herois: %d\n", m->n_herois);
-	printf("n_bases: %d\n", m->n_bases);
-	printf("n_missoes: %d\n", m->n_missoes);
-	printf("\n");
-	
-	for(i=0; i < m->n_herois; i++){
-
-		printf("%d ", i);
-		imprime_heroi(m->herois[i]);
-	}
-
-	for(i=0; i < m->n_bases; i++){
-
-		printf("%d ", i);
-		imprime_base(m->bases[i]);
-	}
-
-	for(i=0; i < m->n_missoes; i++){
-
-		printf("%d ", i);
-		imprime_missao(m->missoes[i]);
-	}
-  */

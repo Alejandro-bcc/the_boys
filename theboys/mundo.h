@@ -5,10 +5,8 @@
 #include "lista.h"
 
 struct par{
-	
-	/* id: identificador */
-	/* cont: conteudo */
-	int id, cont;
+
+	int id, cont; //identificador e conteudo
 };
 
 struct coordenadas{
@@ -37,7 +35,7 @@ struct base{
 		fila_max,
 		miss_part; //missoes participadas
 	struct cjto_t *presentes;
-	struct lista_t *espera;
+	struct lista_t *espera; //fila de espera
 	struct coordenadas local;
 };
 
@@ -91,19 +89,10 @@ struct cjto_t * base_apta(struct mundo *w, struct missao m, struct base b);
 /* da base achada ou NULL se nao houver ou erro */
 /* ou NULL se nao houver ou erro */
 struct cjto_t * acha_base_apta(struct mundo *w, struct missao m, int *b_id);
-  
+
+
+/* Imprime as estatisticas do mundo w*/
+/* junto com informacoes do herois e das bases */
 void imprime_estatisticas(struct mundo *w);
-  
-/* imprime um heroi e todos seus elementos  */
-void imprime_heroi(struct heroi h);
-
-/* imprime uma base e todos seus elementos  */
-void imprime_base(struct base b);
-
-/* imprime uma missao e todos seus elementos  */
-void imprime_missao(struct missao ms);
-
-/* imprime o mundo e todos seus elementos  */
-void imprime_mundo(struct mundo *m);
 
 #endif
