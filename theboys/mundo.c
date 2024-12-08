@@ -188,7 +188,6 @@ struct cjto_t * acha_base_apta(struct mundo *w, struct missao m, int *b_id){
 
 	/* vetor com as distancias e os indices das respectivas bases ate a missao */
 	struct par *dist;
-//	struct base *b_aux;
 	struct cjto_t *habs;
 	int i;
 

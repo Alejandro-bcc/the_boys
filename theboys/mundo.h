@@ -90,7 +90,6 @@ struct cjto_t * base_apta(struct mundo *w, struct missao m, struct base b);
 /* ou NULL se nao houver ou erro */
 struct cjto_t * acha_base_apta(struct mundo *w, struct missao m, int *b_id);
 
-
 /* Imprime as estatisticas do mundo w*/
 /* junto com informacoes do herois e das bases */
 void imprime_estatisticas(struct mundo *w);
