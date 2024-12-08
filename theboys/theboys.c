@@ -3,21 +3,24 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "mundo.h"
+#include "eventos.h"
 
+int main(){
 
-// seus #defines vão aqui
+	srand(0);
 
-// minimize o uso de variáveis globais
+	struct mundo *w;
+	struct fprio_t *lef;
 
-// programa principal
-int main ()
-{
-  // iniciar o mundo
+	lef = fprio_cria();
+	w = cria_mundo();
+	cria_eventos_iniciais(lef, w);
+	simulacao(lef, w);
 
-  // executar o laço de simulação
+	w = destroi_mundo(w);
+	lef = fprio_destroi(lef);
 
-  // destruir o mundo
-
-  return (0) ;
+	return 0;
 }
 
