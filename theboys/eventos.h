@@ -1,11 +1,9 @@
 #ifndef EVENTOS
 #define EVENTOS
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "mundo.h"
 #include "conjunto.h"
 #include "fprio.h"
+#include "mundo.h"
 
 /* estrutura de um evento qualquer */
 struct evento{

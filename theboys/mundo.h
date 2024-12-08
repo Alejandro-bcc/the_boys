@@ -4,9 +4,10 @@
 #include "conjunto.h"
 #include "lista.h"
 
-/* estrutura com um identificador e um conteudo */
 struct par{
-
+	
+	/* id: identificador */
+	/* cont: conteudo */
 	int id, cont;
 };
 
@@ -19,22 +20,22 @@ struct coordenadas{
 struct heroi{
 
 	int id,
-		paciencia,
-		velocidade,
-		experiencia,
+		pac,
+		vel,
+		exp,
 		morto, // 1 se o heroi esta morto 0 se esta vivo
 		id_base;
 
-	struct cjto_t *habilidades;
+	struct cjto_t *habs;
 };
 
 /* estrutura das bases */
 struct base{
 
 	int id, 
-		lotacao,
+		lot,
 		fila_max,
-		mis_part; //missoes participadas
+		miss_part; //missoes participadas
 	struct cjto_t *presentes;
 	struct lista_t *espera;
 	struct coordenadas local;
@@ -47,27 +48,27 @@ struct missao{
 		perigo, 
 		tent, 
 		cump; //0 se a missao nao foi cumprida 1 se foi
-	struct cjto_t *habilidades;
+	struct cjto_t *habs;
 	struct coordenadas local;
 };
 
 /* estrutura do mundo */
 struct mundo{
 
-	int n_herois, n_bases, n_missoes, n_habilidades, n_eventos, inicio, fim;
+	int n_herois, n_bases, n_missoes, n_habs, n_eventos, inicio, fim;
 	struct heroi *herois;
 	struct base *bases;
 	struct missao *missoes;
-	struct coordenadas maximos;
+	struct coordenadas max;
 };
 
-/* funcao que cria o mundo e inicializa as entidades */
-/* retorno: ponteiro para o mundo ou NULL em erro  */
+/* Funcao que cria o mundo e inicializa todas as entidades */
+/* Retorno: ponteiro para o mundo ou NULL em erro */
 struct mundo * cria_mundo();
 
-/* destroi o mundo e todas suas entidades e libera a memoria */
+/* Destroi o mundo e todas suas entidades e libera a memoria */
 /* retorno: NULL */
-struct mundo * destroi_mundo(struct mundo *m);
+struct mundo * destroi_mundo(struct mundo *w);
 
 /* calcula a distancia cartesiana entre o ponto de origem e destino  */
 int calcula_distancia(struct coordenadas origem, struct coordenadas destino);
@@ -77,21 +78,21 @@ int calcula_distancia(struct coordenadas origem, struct coordenadas destino);
 /* Usa o algoritmo de Insertion Sort */
 void ordena_vetor_pares(struct par p[], int n);
 
-/* Detecta se uma base eh apta para uma missao */
-/* Ou seja, a uniao das habilidades dos herois da base */
-/* cumpre com as habilidades requeridas pela missao */
-/* Devolve o conjunto das habilidades dos herois da base */
-/* no parametro "habs" */
-/* Retorno: 1 se a base for apta, 0 se não for ou -1 em erro */
-struct cjto_t * base_apta(struct mundo *m ,struct missao mis, struct base b);
+/* Determina se a base b eh apta para a missao m */
+/* Ou seja, o conjunto das habilidades requeridas pela missao */
+/* esta contido na uniao das habilidades de todos os herois da base */
+/* Retorno: ponteiro para o conjunto da uniao das habilidades dos herois */
+/* ou NULL se a base nao for apta ou erro */
+struct cjto_t * base_apta(struct mundo *w, struct missao m, struct base b);
 
-/* Acha a base apta mais proxima à missao mis */
-/* O ponteiro para a base achada e o conjunto das habilidades */
-/* dos herois da base sao devolvidos nos parametros "b" e "habs" */
-/* Retorno: 0 se não houver uma base apta, 1 se houver e -1 em erro */
-struct base * acha_base_apta(struct mundo *m, struct missao *mis, struct cjto_t **habs);
+/* Acha a base apta mais proxima à missao m */
+/* Devolve o ID da base achada no parametro "b_id" */
+/* Retorno: ponteiro para o conjunto da uniao das habilidades dos herois */
+/* da base achada ou NULL se nao houver ou erro */
+/* ou NULL se nao houver ou erro */
+struct cjto_t * acha_base_apta(struct mundo *w, struct missao m, int *b_id);
   
-void imprime_estatisticas(struct mundo *m);
+void imprime_estatisticas(struct mundo *w);
   
 /* imprime um heroi e todos seus elementos  */
 void imprime_heroi(struct heroi h);
